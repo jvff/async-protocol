@@ -3,6 +3,7 @@ extern crate failure;
 extern crate failure_derive;
 #[macro_use]
 extern crate futures;
+extern crate tokio_service;
 
 mod delayed_add;
 mod ready_queue;
@@ -16,3 +17,4 @@ mod request_sender;
 mod client_error;
 mod client_receiver;
 mod map_to_client_receive_error;
+mod pipeline_client;
