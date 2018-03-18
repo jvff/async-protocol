@@ -21,3 +21,6 @@ mod pipeline_client;
 
 #[cfg(test)]
 pub mod tests;
+
+pub use client_error::ClientError;
+pub use pipeline_client::PipelineClient;
