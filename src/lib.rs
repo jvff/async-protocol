@@ -1,3 +1,6 @@
+extern crate failure;
+#[macro_use]
+extern crate failure_derive;
 #[macro_use]
 extern crate futures;
 
@@ -9,3 +12,5 @@ mod dispatcher;
 mod receiver;
 
 mod request_sender;
+
+mod client_error;
