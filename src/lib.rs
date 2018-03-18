@@ -14,3 +14,4 @@ mod receiver;
 mod request_sender;
 
 mod client_error;
+mod map_to_client_receive_error;
