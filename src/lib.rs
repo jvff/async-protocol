@@ -18,3 +18,6 @@ mod client_error;
 mod client_receiver;
 mod map_to_client_receive_error;
 mod pipeline_client;
+
+#[cfg(test)]
+pub mod tests;
