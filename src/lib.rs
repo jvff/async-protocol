@@ -19,8 +19,12 @@ mod client_receiver;
 mod map_to_client_receive_error;
 mod pipeline_client;
 
+mod server_error;
+
 #[cfg(test)]
 pub mod tests;
 
 pub use client_error::ClientError;
 pub use pipeline_client::PipelineClient;
+
+pub use server_error::ServerError;
