@@ -9,8 +9,7 @@ pub trait Dispatcher {
 
     fn spawn_receiver(&self) -> Receiver<Self>
     where
-        Self: Sized,
-    ;
+        Self: Sized;
 
     fn poll(&self, id: &Self::Id) -> Poll<Self::Item, Self::Error>;
 }

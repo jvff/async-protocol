@@ -43,7 +43,9 @@ impl<T> ReadyQueue<T> {
 
             item
         } else {
-            self.queue[position].take().expect("item popped twice")
+            self.queue[position]
+                .take()
+                .expect("item popped twice")
         }
     }
 }

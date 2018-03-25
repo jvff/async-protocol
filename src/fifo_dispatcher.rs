@@ -40,13 +40,13 @@ where
     }
 
     fn get_from_source(&self) -> Poll<(), T::Error> {
-        let mut source = self.source.lock()
-            .expect(
-                "a thread panicked while holding the FifoDispatcher locked",
-            );
+        let mut source = self.source.lock().expect(
+            "a thread panicked while holding the FifoDispatcher locked",
+        );
 
         if let Some(item) = try_ready!(source.poll()) {
-            let mut update_latest_ready_id = DelayedAdd::new(&self.latest_ready_id);
+            let mut update_latest_ready_id =
+                DelayedAdd::new(&self.latest_ready_id);
             let mut queue = self.lock_queue();
 
             queue.push(item);
@@ -74,10 +74,13 @@ where
 {
     type Item = T::Item;
     type Error = T::Error;
-    type Id =  usize;
+    type Id = usize;
 
     fn spawn_receiver(&self) -> Receiver<Self> {
-        Receiver::new(&self, self.new_id.fetch_add(1, Ordering::Relaxed))
+        Receiver::new(
+            &self,
+            self.new_id.fetch_add(1, Ordering::Relaxed),
+        )
     }
 
     fn poll(&self, id: &Self::Id) -> Poll<Self::Item, Self::Error> {
@@ -86,8 +89,7 @@ where
         } else {
             self.get_from_source()?;
 
-            let item = self
-                .pop_if_ready(*id)
+            let item = self.pop_if_ready(*id)
                 .map(Async::Ready)
                 .unwrap_or(Async::NotReady);
 

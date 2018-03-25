@@ -30,10 +30,12 @@ impl<F, I, O> Future for MapToClientReceiveError<F, I, O>
 where
     F: Future<Error = I>,
 {
-    type Item =  F::Item;
+    type Item = F::Item;
     type Error = ClientError<I, O>;
 
     fn poll(&mut self) -> Poll<Self::Item, Self::Error> {
-        self.future.poll().map_err(ClientError::ReceiveError)
+        self.future
+            .poll()
+            .map_err(ClientError::ReceiveError)
     }
 }

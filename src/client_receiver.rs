@@ -36,8 +36,14 @@ where
     type Error = ClientError<D::Error, S::Error>;
 
     fn poll(&mut self) -> Poll<Self::Item, Self::Error> {
-        try_ready!(self.sender.poll().map_err(ClientError::SendError));
+        try_ready!(
+            self.sender
+                .poll()
+                .map_err(ClientError::SendError)
+        );
 
-        Ok(Async::Ready(self.dispatcher.spawn_receiver().into()))
+        Ok(Async::Ready(
+            self.dispatcher.spawn_receiver().into(),
+        ))
     }
 }

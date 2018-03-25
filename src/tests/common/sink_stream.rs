@@ -40,7 +40,10 @@ where
     type SinkItem = O::SinkItem;
     type SinkError = O::SinkError;
 
-    fn start_send(&mut self, item: Self::SinkItem) -> StartSend<Self::SinkItem, Self::SinkError> {
+    fn start_send(
+        &mut self,
+        item: Self::SinkItem,
+    ) -> StartSend<Self::SinkItem, Self::SinkError> {
         self.sink.start_send(item)
     }
 

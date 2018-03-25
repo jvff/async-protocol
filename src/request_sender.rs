@@ -30,7 +30,8 @@ where
     type Error = T::SinkError;
 
     fn poll(&mut self) -> Poll<Self::Item, Self::Error> {
-        let mut sink = self.sink.lock()
+        let mut sink = self.sink
+            .lock()
             .expect("a thread panicked while holding RequestSender locked");
 
         if let Some(request) = self.request.take() {

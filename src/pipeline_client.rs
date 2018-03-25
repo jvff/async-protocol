@@ -39,14 +39,13 @@ where
     type Request = T::SinkItem;
     type Response = T::Item;
     type Error = ClientError<T::Error, T::SinkError>;
-    type Future =
-        Flatten<
-            ClientReceiver<
-                's,
-                FifoDispatcher<SplitStream<T>>,
-                RequestSender<SplitSink<T>>,
-            >,
-        >;
+    type Future = Flatten<
+        ClientReceiver<
+            's,
+            FifoDispatcher<SplitStream<T>>,
+            RequestSender<SplitSink<T>>,
+        >,
+    >;
 
     fn call(&self, request: Self::Request) -> Self::Future {
         let sink = self.request_sink.clone();
@@ -63,8 +62,8 @@ mod tests {
     use futures::Async;
     use futures::sync::mpsc;
 
-    use tests::common::SinkStream;
     use super::*;
+    use tests::common::SinkStream;
 
     #[test]
     fn simple_operation() {
@@ -84,8 +83,12 @@ mod tests {
         let first_response = "first response";
         let second_response = "second response";
 
-        in_tx.try_send(first_response.to_string()).unwrap();
-        in_tx.try_send(second_response.to_string()).unwrap();
+        in_tx
+            .try_send(first_response.to_string())
+            .unwrap();
+        in_tx
+            .try_send(second_response.to_string())
+            .unwrap();
 
         let calls = first_call.join(second_call);
         let (first_result, second_result) = calls.wait().unwrap();
@@ -115,8 +118,12 @@ mod tests {
         let first_response = "first response";
         let second_response = "second response";
 
-        in_tx.try_send(first_response.to_string()).unwrap();
-        in_tx.try_send(second_response.to_string()).unwrap();
+        in_tx
+            .try_send(first_response.to_string())
+            .unwrap();
+        in_tx
+            .try_send(second_response.to_string())
+            .unwrap();
 
         let calls = second_call.join(first_call);
         let (first_result, second_result) = calls.wait().unwrap();

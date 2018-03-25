@@ -20,6 +20,7 @@ impl<'t> DelayedAdd<'t> {
 
 impl<'t> Drop for DelayedAdd<'t> {
     fn drop(&mut self) {
-        self.target.fetch_add(self.count, Ordering::Relaxed);
+        self.target
+            .fetch_add(self.count, Ordering::Relaxed);
     }
 }
