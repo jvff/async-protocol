@@ -19,6 +19,7 @@ mod client_receiver;
 mod map_to_client_receive_error;
 mod pipeline_client;
 
+mod map_to_server_send_error;
 mod server_error;
 
 #[cfg(test)]
