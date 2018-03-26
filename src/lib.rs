@@ -3,6 +3,7 @@ extern crate failure;
 extern crate failure_derive;
 #[macro_use]
 extern crate futures;
+extern crate tokio_core;
 extern crate tokio_service;
 
 mod delayed_add;
