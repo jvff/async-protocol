@@ -20,6 +20,7 @@ mod request_sender;
 mod client_error;
 mod client_receiver;
 mod map_to_client_receive_error;
+mod multiplex_client;
 mod pipeline_client;
 
 mod map_to_server_send_error;
@@ -30,6 +31,7 @@ mod server_error;
 pub mod tests;
 
 pub use client_error::ClientError;
+pub use multiplex_client::MultiplexClient;
 pub use pipeline_client::PipelineClient;
 
 pub use pipeline_server::PipelineServer;
