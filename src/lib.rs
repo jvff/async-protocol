@@ -10,8 +10,9 @@ mod delayed_add;
 mod message_with_id;
 mod ready_queue;
 
-mod fifo_dispatcher;
 mod dispatcher;
+mod fifo_dispatcher;
+mod multiplex_dispatcher;
 mod receiver;
 
 mod request_sender;
