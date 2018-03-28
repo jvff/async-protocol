@@ -24,6 +24,7 @@ mod multiplex_client;
 mod pipeline_client;
 
 mod map_to_server_send_error;
+mod multiplex_server;
 mod pipeline_server;
 mod server_error;
 
@@ -34,5 +35,6 @@ pub use client_error::ClientError;
 pub use multiplex_client::MultiplexClient;
 pub use pipeline_client::PipelineClient;
 
+pub use multiplex_server::MultiplexServer;
 pub use pipeline_server::PipelineServer;
 pub use server_error::ServerError;
