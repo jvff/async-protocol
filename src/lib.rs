@@ -25,6 +25,7 @@ mod multiplex_client;
 mod pipeline_client;
 
 mod map_to_server_send_error;
+mod generic_server;
 mod multiplex_server;
 mod pipeline_server;
 mod server_error;
