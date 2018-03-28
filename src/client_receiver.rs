@@ -8,7 +8,7 @@ use super::receiver::Receiver;
 pub struct ClientReceiver<'d, D, S>
 where
     D: Dispatcher + 'd,
-    S: Future,
+    S: Future<Item = D::Seed>,
 {
     dispatcher: &'d D,
     sender: S,
@@ -17,7 +17,7 @@ where
 impl<'d, D, S> ClientReceiver<'d, D, S>
 where
     D: Dispatcher + 'd,
-    S: Future,
+    S: Future<Item = D::Seed>,
 {
     pub fn new(dispatcher: &'d D, sender: S) -> Self {
         ClientReceiver {
@@ -30,20 +30,20 @@ where
 impl<'d, D, S> Future for ClientReceiver<'d, D, S>
 where
     D: Dispatcher + 'd,
-    S: Future,
+    S: Future<Item = D::Seed>,
 {
     type Item = MapToClientReceiveError<Receiver<'d, D>, D::Error, S::Error>;
     type Error = ClientError<D::Error, S::Error>;
 
     fn poll(&mut self) -> Poll<Self::Item, Self::Error> {
-        try_ready!(
+        let seed = try_ready!(
             self.sender
                 .poll()
                 .map_err(ClientError::SendError)
         );
 
         Ok(Async::Ready(
-            self.dispatcher.spawn_receiver().into(),
+            self.dispatcher.spawn_receiver(seed).into(),
         ))
     }
 }

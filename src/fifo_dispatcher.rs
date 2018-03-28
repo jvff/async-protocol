@@ -1,5 +1,5 @@
-use std::sync::{Arc, Mutex, MutexGuard};
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::{Arc, Mutex, MutexGuard};
 
 use futures::{Async, Poll, Stream};
 
@@ -75,8 +75,9 @@ where
     type Item = T::Item;
     type Error = T::Error;
     type Id = usize;
+    type Seed = ();
 
-    fn spawn_receiver(&self) -> Receiver<Self> {
+    fn spawn_receiver(&self, _seed: Self::Seed) -> Receiver<Self> {
         Receiver::new(
             &self,
             self.new_id.fetch_add(1, Ordering::Relaxed),

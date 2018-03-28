@@ -1,8 +1,8 @@
 use std::sync::{Arc, Mutex};
 
-use futures::{Future, Sink, Stream};
 use futures::future::Flatten;
 use futures::stream::{SplitSink, SplitStream};
+use futures::{Future, Sink, Stream};
 use tokio_service::Service;
 
 use super::client_error::ClientError;
@@ -43,14 +43,14 @@ where
         ClientReceiver<
             's,
             FifoDispatcher<SplitStream<T>>,
-            RequestSender<SplitSink<T>>,
+            RequestSender<SplitSink<T>, ()>,
         >,
     >;
 
     fn call(&self, request: Self::Request) -> Self::Future {
         let sink = self.request_sink.clone();
         let dispatcher = &self.response_dispatcher;
-        let send = RequestSender::new(sink, request);
+        let send = RequestSender::new(sink, request, ());
         let receiver = ClientReceiver::new(dispatcher, send);
 
         receiver.flatten()

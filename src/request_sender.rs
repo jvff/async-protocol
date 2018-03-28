@@ -2,32 +2,34 @@ use std::sync::{Arc, Mutex};
 
 use futures::{Async, AsyncSink, Future, Poll, Sink};
 
-pub struct RequestSender<T>
+pub struct RequestSender<O, S>
 where
-    T: Sink,
+    O: Sink,
 {
-    sink: Arc<Mutex<T>>,
-    request: Option<T::SinkItem>,
+    sink: Arc<Mutex<O>>,
+    request: Option<O::SinkItem>,
+    seed: Option<S>,
 }
 
-impl<T> RequestSender<T>
+impl<O, S> RequestSender<O, S>
 where
-    T: Sink,
+    O: Sink,
 {
-    pub fn new(sink: Arc<Mutex<T>>, request: T::SinkItem) -> Self {
+    pub fn new(sink: Arc<Mutex<O>>, request: O::SinkItem, seed: S) -> Self {
         RequestSender {
             sink,
             request: Some(request),
+            seed: Some(seed),
         }
     }
 }
 
-impl<T> Future for RequestSender<T>
+impl<O, S> Future for RequestSender<O, S>
 where
-    T: Sink,
+    O: Sink,
 {
-    type Item = ();
-    type Error = T::SinkError;
+    type Item = S;
+    type Error = O::SinkError;
 
     fn poll(&mut self) -> Poll<Self::Item, Self::Error> {
         let mut sink = self.sink
@@ -44,6 +46,12 @@ where
             }
         }
 
-        sink.poll_complete()
+        try_ready!(sink.poll_complete());
+
+        let seed = self.seed
+            .take()
+            .expect("Request sender polled after it had completed");
+
+        Ok(Async::Ready(seed))
     }
 }
