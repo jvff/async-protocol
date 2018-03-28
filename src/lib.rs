@@ -9,6 +9,7 @@ extern crate tokio_service;
 mod delayed_add;
 mod message_with_id;
 mod ready_queue;
+mod stream_of_future_results;
 
 mod dispatcher;
 mod fifo_dispatcher;
