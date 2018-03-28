@@ -24,14 +24,16 @@ mod map_to_client_receive_error;
 mod multiplex_client;
 mod pipeline_client;
 
-mod map_to_server_send_error;
 mod generic_server;
+mod map_to_server_send_error;
 mod multiplex_server;
 mod pipeline_server;
 mod server_error;
 
 #[cfg(test)]
 pub mod tests;
+
+pub use message_with_id::MessageWithId;
 
 pub use client_error::ClientError;
 pub use multiplex_client::MultiplexClient;
