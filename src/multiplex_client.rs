@@ -20,7 +20,7 @@ where
     <T::Item as MessageWithId>::Id: Eq + Hash,
 {
     request_sink: Arc<Mutex<SplitSink<T>>>,
-    response_dispatcher: MultiplexDispatcher<SplitStream<T>>,
+    response_dispatcher: Arc<MultiplexDispatcher<SplitStream<T>>>,
 }
 
 impl<T> MultiplexClient<T>
@@ -35,12 +35,12 @@ where
 
         MultiplexClient {
             request_sink: Arc::new(Mutex::new(outgoing)),
-            response_dispatcher: MultiplexDispatcher::new(incoming),
+            response_dispatcher: Arc::new(MultiplexDispatcher::new(incoming)),
         }
     }
 }
 
-impl<'s, T> Service for &'s MultiplexClient<T>
+impl<T> Service for MultiplexClient<T>
 where
     T: Stream + Sink,
     T::Item: MessageWithId,
@@ -52,7 +52,6 @@ where
     type Error = ClientError<T::Error, T::SinkError>;
     type Future = Flatten<
         ClientReceiver<
-            's,
             MultiplexDispatcher<SplitStream<T>>,
             RequestSender<SplitSink<T>, <T::Item as MessageWithId>::Id>,
         >,
@@ -61,7 +60,7 @@ where
     fn call(&self, request: Self::Request) -> Self::Future {
         let id = request.id();
         let sink = self.request_sink.clone();
-        let dispatcher = &self.response_dispatcher;
+        let dispatcher = self.response_dispatcher.clone();
         let send = RequestSender::new(sink, request, id);
         let receiver = ClientReceiver::new(dispatcher, send);
 

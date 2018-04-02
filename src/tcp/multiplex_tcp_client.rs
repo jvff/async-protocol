@@ -48,7 +48,7 @@ where
     }
 }
 
-impl<'s, C> Service for &'s MultiplexTcpClient<C>
+impl<C> Service for MultiplexTcpClient<C>
 where
     C: Decoder + Encoder,
     <C as Decoder>::Item: MessageWithId,
@@ -59,8 +59,7 @@ where
     type Request = <C as Encoder>::Item;
     type Response = <C as Decoder>::Item;
     type Error = ClientError<<C as Decoder>::Error, <C as Encoder>::Error>;
-    type Future =
-        <&'s MultiplexClient<TcpClientTransport<C>> as Service>::Future;
+    type Future = <MultiplexClient<TcpClientTransport<C>> as Service>::Future;
 
     fn call(&self, request: Self::Request) -> Self::Future {
         let client = &self.client;

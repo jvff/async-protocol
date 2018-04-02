@@ -37,15 +37,14 @@ where
     }
 }
 
-impl<'s, C> Service for &'s PipelineTcpClient<C>
+impl<C> Service for PipelineTcpClient<C>
 where
     C: Decoder + Encoder,
 {
     type Request = <C as Encoder>::Item;
     type Response = <C as Decoder>::Item;
     type Error = ClientError<<C as Decoder>::Error, <C as Encoder>::Error>;
-    type Future =
-        <&'s PipelineClient<TcpClientTransport<C>> as Service>::Future;
+    type Future = <PipelineClient<TcpClientTransport<C>> as Service>::Future;
 
     fn call(&self, request: Self::Request) -> Self::Future {
         let client = &self.client;

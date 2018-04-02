@@ -76,8 +76,8 @@ where
     type Id = <T::Item as MessageWithId>::Id;
     type Seed = Self::Id;
 
-    fn spawn_receiver(&self, id: Self::Seed) -> Receiver<Self> {
-        Receiver::new(&self, id)
+    fn spawn_receiver(arc_self: Arc<Self>, id: Self::Seed) -> Receiver<Self> {
+        Receiver::new(arc_self, id)
     }
 
     fn poll(&self, id: &Self::Id) -> Poll<Self::Item, Self::Error> {

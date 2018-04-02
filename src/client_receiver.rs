@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use futures::{Async, Future, Poll};
 
 use super::client_error::ClientError;
@@ -5,21 +7,21 @@ use super::dispatcher::Dispatcher;
 use super::map_to_client_receive_error::MapToClientReceiveError;
 use super::receiver::Receiver;
 
-pub struct ClientReceiver<'d, D, S>
+pub struct ClientReceiver<D, S>
 where
-    D: Dispatcher + 'd,
+    D: Dispatcher,
     S: Future<Item = D::Seed>,
 {
-    dispatcher: &'d D,
+    dispatcher: Arc<D>,
     sender: S,
 }
 
-impl<'d, D, S> ClientReceiver<'d, D, S>
+impl<D, S> ClientReceiver<D, S>
 where
-    D: Dispatcher + 'd,
+    D: Dispatcher,
     S: Future<Item = D::Seed>,
 {
-    pub fn new(dispatcher: &'d D, sender: S) -> Self {
+    pub fn new(dispatcher: Arc<D>, sender: S) -> Self {
         ClientReceiver {
             dispatcher,
             sender,
@@ -27,12 +29,12 @@ where
     }
 }
 
-impl<'d, D, S> Future for ClientReceiver<'d, D, S>
+impl<D, S> Future for ClientReceiver<D, S>
 where
-    D: Dispatcher + 'd,
+    D: Dispatcher,
     S: Future<Item = D::Seed>,
 {
-    type Item = MapToClientReceiveError<Receiver<'d, D>, D::Error, S::Error>;
+    type Item = MapToClientReceiveError<Receiver<D>, D::Error, S::Error>;
     type Error = ClientError<D::Error, S::Error>;
 
     fn poll(&mut self) -> Poll<Self::Item, Self::Error> {
@@ -43,7 +45,7 @@ where
         );
 
         Ok(Async::Ready(
-            self.dispatcher.spawn_receiver(seed).into(),
+            Dispatcher::spawn_receiver(self.dispatcher.clone(), seed).into(),
         ))
     }
 }

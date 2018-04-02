@@ -10,12 +10,19 @@ use super::client_receiver::ClientReceiver;
 use super::fifo_dispatcher::FifoDispatcher;
 use super::request_sender::RequestSender;
 
+pub type PipelineClientFuture<T> = Flatten<
+    ClientReceiver<
+        FifoDispatcher<SplitStream<T>>,
+        RequestSender<SplitSink<T>, ()>,
+    >,
+>;
+
 pub struct PipelineClient<T>
 where
     T: Stream + Sink,
 {
     request_sink: Arc<Mutex<SplitSink<T>>>,
-    response_dispatcher: FifoDispatcher<SplitStream<T>>,
+    response_dispatcher: Arc<FifoDispatcher<SplitStream<T>>>,
 }
 
 impl<T> PipelineClient<T>
@@ -27,29 +34,23 @@ where
 
         PipelineClient {
             request_sink: Arc::new(Mutex::new(outgoing)),
-            response_dispatcher: FifoDispatcher::new(incoming),
+            response_dispatcher: Arc::new(FifoDispatcher::new(incoming)),
         }
     }
 }
 
-impl<'s, T> Service for &'s PipelineClient<T>
+impl<T> Service for PipelineClient<T>
 where
     T: Stream + Sink,
 {
     type Request = T::SinkItem;
     type Response = T::Item;
     type Error = ClientError<T::Error, T::SinkError>;
-    type Future = Flatten<
-        ClientReceiver<
-            's,
-            FifoDispatcher<SplitStream<T>>,
-            RequestSender<SplitSink<T>, ()>,
-        >,
-    >;
+    type Future = PipelineClientFuture<T>;
 
     fn call(&self, request: Self::Request) -> Self::Future {
         let sink = self.request_sink.clone();
-        let dispatcher = &self.response_dispatcher;
+        let dispatcher = self.response_dispatcher.clone();
         let send = RequestSender::new(sink, request, ());
         let receiver = ClientReceiver::new(dispatcher, send);
 

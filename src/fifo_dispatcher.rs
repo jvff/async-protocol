@@ -77,11 +77,13 @@ where
     type Id = usize;
     type Seed = ();
 
-    fn spawn_receiver(&self, _seed: Self::Seed) -> Receiver<Self> {
-        Receiver::new(
-            &self,
-            self.new_id.fetch_add(1, Ordering::Relaxed),
-        )
+    fn spawn_receiver(
+        arc_self: Arc<Self>,
+        _seed: Self::Seed,
+    ) -> Receiver<Self> {
+        let new_id = arc_self.new_id.fetch_add(1, Ordering::Relaxed);
+
+        Receiver::new(arc_self, new_id)
     }
 
     fn poll(&self, id: &Self::Id) -> Poll<Self::Item, Self::Error> {

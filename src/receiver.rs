@@ -1,27 +1,29 @@
+use std::sync::Arc;
+
 use futures::{Future, Poll};
 
 use super::dispatcher::Dispatcher;
 
-pub struct Receiver<'d, D>
+pub struct Receiver<D>
 where
-    D: Dispatcher + 'd,
+    D: Dispatcher,
 {
-    dispatcher: &'d D,
+    dispatcher: Arc<D>,
     id: D::Id,
 }
 
-impl<'d, D> Receiver<'d, D>
+impl<D> Receiver<D>
 where
-    D: Dispatcher + 'd,
+    D: Dispatcher,
 {
-    pub fn new(dispatcher: &'d D, id: D::Id) -> Self {
+    pub fn new(dispatcher: Arc<D>, id: D::Id) -> Self {
         Receiver { dispatcher, id }
     }
 }
 
-impl<'d, D> Future for Receiver<'d, D>
+impl<D> Future for Receiver<D>
 where
-    D: Dispatcher + 'd,
+    D: Dispatcher,
 {
     type Item = D::Item;
     type Error = D::Error;

@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use futures::Poll;
 
 use super::receiver::Receiver;
@@ -8,7 +10,7 @@ pub trait Dispatcher {
     type Id;
     type Seed;
 
-    fn spawn_receiver(&self, seed: Self::Seed) -> Receiver<Self>
+    fn spawn_receiver(arc_self: Arc<Self>, seed: Self::Seed) -> Receiver<Self>
     where
         Self: Sized;
 
