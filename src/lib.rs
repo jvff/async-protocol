@@ -30,6 +30,8 @@ mod multiplex_server;
 mod pipeline_server;
 mod server_error;
 
+mod listening_server_error;
+
 #[cfg(test)]
 pub mod tests;
 
