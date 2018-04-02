@@ -1,6 +1,6 @@
 use std::{hash::Hash, net::SocketAddr};
 
-use tokio_core::reactor::Handle;
+use tokio_core::{net::TcpStream, reactor::Handle};
 use tokio_io::codec::{Decoder, Encoder};
 use tokio_service::Service;
 
@@ -33,6 +33,14 @@ where
 {
     pub fn connect(address: &SocketAddr, codec: C, handle: &Handle) -> Self {
         let transport = TcpClientTransport::connect(address, codec, handle);
+
+        MultiplexTcpClient {
+            client: MultiplexClient::new(transport),
+        }
+    }
+
+    pub fn with_connection(connection: TcpStream, codec: C) -> Self {
+        let transport = TcpClientTransport::with_connection(connection, codec);
 
         MultiplexTcpClient {
             client: MultiplexClient::new(transport),

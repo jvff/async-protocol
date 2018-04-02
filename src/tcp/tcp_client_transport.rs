@@ -24,6 +24,10 @@ where
         )
     }
 
+    pub fn with_connection(connection: TcpStream, codec: C) -> Self {
+        TcpClientTransport::Connected(connection.framed(codec))
+    }
+
     fn is_connecting(&self) -> bool {
         match *self {
             TcpClientTransport::Connecting(..) => true,
