@@ -35,6 +35,7 @@ mod listening_server_error;
 mod map_to_listening_server_server_error;
 mod map_to_listening_server_service_error;
 mod map_to_listening_server_transport_error;
+mod multiplex_listening_server;
 mod pipeline_listening_server;
 
 #[cfg(test)]
@@ -51,4 +52,5 @@ pub use pipeline_server::PipelineServer;
 pub use server_error::ServerError;
 
 pub use listening_server_error::ListeningServerError;
+pub use multiplex_listening_server::MultiplexListeningServer;
 pub use pipeline_listening_server::PipelineListeningServer;
