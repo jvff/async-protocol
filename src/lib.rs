@@ -32,6 +32,7 @@ mod server_error;
 
 mod listening_server_error;
 mod map_to_listening_server_server_error;
+mod map_to_listening_server_service_error;
 
 #[cfg(test)]
 pub mod tests;
