@@ -1,4 +1,5 @@
 mod incoming_transports;
+mod tcp_client_transport;
 
 mod generic_tcp_server;
 mod multiplex_tcp_server;
