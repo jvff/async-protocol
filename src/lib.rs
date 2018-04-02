@@ -30,6 +30,7 @@ mod multiplex_server;
 mod pipeline_server;
 mod server_error;
 
+mod generic_listening_server;
 mod listening_server_error;
 mod map_to_listening_server_server_error;
 mod map_to_listening_server_service_error;
