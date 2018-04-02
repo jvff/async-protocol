@@ -4,6 +4,8 @@ extern crate failure_derive;
 #[macro_use]
 extern crate futures;
 extern crate tokio_core;
+#[cfg(feature = "tcp")]
+extern crate tokio_io;
 extern crate tokio_service;
 
 mod delayed_add;
@@ -38,6 +40,9 @@ mod map_to_listening_server_transport_error;
 mod multiplex_listening_server;
 mod pipeline_listening_server;
 
+#[cfg(feature = "tcp")]
+mod tcp;
+
 #[cfg(test)]
 pub mod tests;
 
@@ -54,3 +59,6 @@ pub use server_error::ServerError;
 pub use listening_server_error::ListeningServerError;
 pub use multiplex_listening_server::MultiplexListeningServer;
 pub use pipeline_listening_server::PipelineListeningServer;
+
+#[cfg(feature = "tcp")]
+pub use tcp::*;
